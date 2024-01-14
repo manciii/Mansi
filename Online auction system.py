@@ -16,6 +16,7 @@ def registration():
     global names,id
     names=input("username")
     id=int(input("create user id"))
+    print("important note: remember your id for next use")
     query="insert into registrations values({},'{}')".format(id ,names)
     mycursor.execute(query)
     con.commit()
@@ -35,11 +36,13 @@ def bid(id,username):
 
 def max_bid():
     global mycursor
-    ino=input("enter the product no whose max bid you want to see")
-    query="select max(bid),username from bidder where item_no= "+str(ino)
+    ino=98
+    #input("enter the product no whose max bid you want to see")
+    query="select max(bid),username from(select * row_number() order by bid desc rn from bidder)x where rn=1 and item_no= "+ str(ino)
     mycursor.execute(query)
     myproducts=mycursor.fetchone()
     print(myproducts)
+    #query="select max(bid),username from(select * row_number() order by bid desc rn from bidder)x where rn=1"
     print("till now he has bid the highest price")
     c=mycursor.rowcount
     if c==-1:
@@ -110,52 +113,70 @@ def del_prod():
     else:
         print("product with product id",ino,"not found")
     return
+def al_choices():
+    while True:
+        print('\n\n\n')
+        print('***'*50)
+        print('\t\t\t\t\t\t\t\tMAIN MENU')
+        print('***'*50)
+        print("\t\t\t\t\t\t\t\t1.Show All Products")
+        print("\t\t\t\t\t\t\t\t2.Add Products")
+        print("\t\t\t\t\t\t\t\t3.Delete Products")
+        print("\t\t\t\t\t\t\t\t4.Show Selected Products")
+        print("\t\t\t\t\t\t\t\t5.Bid")
+        print("\t\t\t\t\t\t\t\t6.Show Bidders")
+        print("\t\t\t\t\t\t\t\t7.Winner")
+        print("\t\t\t\t\t\t\t\t8.Show All Users")
+        print("\t\t\t\t\t\t\t\t9.To Exit")
+        print("enter choice",end='')
 
-registration()
 
-while True:
-    print('\n\n\n')
-    print('***'*50)
-    print('\t\t\t\t\t\t\t\tMAIN MENU')
-    print('***'*50)
-    print("\t\t\t\t\t\t\t\t1.Show All Products")
-    print("\t\t\t\t\t\t\t\t2.Add Products")
-    print("\t\t\t\t\t\t\t\t3.Delete Products")
-    print("\t\t\t\t\t\t\t\t4.Show Selected Products")
-    print("\t\t\t\t\t\t\t\t5.Bid")
-    print("\t\t\t\t\t\t\t\t6.Show Bidders")
-    print("\t\t\t\t\t\t\t\t7.Winner")
-    print("\t\t\t\t\t\t\t\t8.Show All Users")
-    print("\t\t\t\t\t\t\t\t9.To Exit")
-    print("enter choice",end='')
-    
-    choice=int(input())
-    if choice==1:
-        display_all_prod()
-    elif choice==2:
-        add_prod()
-    elif choice==3:
-        del_prod()
-    elif choice==4:
-        display_selected_prod()
-    elif choice==5:
-        bid(id,names)
-    elif choice==6:
-        display_all_bidders()
-    elif choice==7:
-        max_bid()
-    elif choice==8:
-        display_users()
-    elif choice==9:
-        break
+        choice=int(input())
+        if choice==1:
+            display_all_prod()
+        elif choice==2:
+            add_prod()
+        elif choice==3:
+            del_prod()
+        elif choice==4:
+            display_selected_prod()
+        elif choice==5:
+            bid(id,names)
+        elif choice==6:
+            display_all_bidders()
+        elif choice==7:
+            max_bid()
+        elif choice==8:
+            display_users()
+        elif choice==9:
+            break
+        else:
+            print("invalid choice........please enter write choice i.e.1,2,3,4,5")
+        input()
+print('\t\t\t\t\t\t\t\tA.login')
+print('\t\t\t\t\t\t\t\tB.register')
+choose=input('enter your choice')
+if choose=='b':
+      registration()
+elif choose=='a':
+    a=int(input('enter id'))
+    username=input("enter you registered name")
+    names=username
+    id=a
+    query="select * from registrations where ids= " + str(a)
+    mycursor.execute(query)
+    mynames=mycursor.fetchone()
+    print(mynames)
+    print("if above is your username and id print Y otherwise print N")
+    c=input('enter choice')
+    if c=='Y':
+        al_choices()
     else:
-        print("invalid choice........please enter write choice i.e.1,2,3,4,5")
-    input()
-    
-    
-    
-    
-    
+        registration()
+else:
+    print('choose only A or B')
+al_choices()
+
 
 
 
